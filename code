@@ -1,0 +1,85 @@
+@@ -1,19 +1,21 @@
+from tkinter import Tk, Frame, Label, Button 
+from PIL import ImageTk,Image
+
+#frame for quiz. title, size, background color
+root = Tk()
+root.title("The Simpsons Quiz Game!")
+root.geometry("470x460")
+root.configure(background= 'gray94')
+
+#Image of homer at the bottom
+img = ImageTk.PhotoImage(Image.open("picture1.png"))
+panel = Label(root,image = img)
+panel.pack(side = "bottom", fill = "none", expand = "no")
+
+frame = Frame(root)
+frame.pack()
+
+
+#this is for the quiz to go through all the questions. Tells user if it is right or wrong
+class Question:
+    def __init__(self, question, answers, correctLetter):
+        self.question = question
+@@ -30,15 +32,22 @@ def check(self, letter, view):
+        label.pack()
+        view.after(1000, lambda *args: self.unpackView(view))
+
+    #buttons for answers. has color and active color when clicked on
+
+    def getView(self, window):
+    def buttons(self, window):
+        view = Frame(root)
+        Label(view, text=self.question).pack()
+        Button(view, bg='#00ccff', activebackground='#ffff33', text=self.answers[0], command=lambda *args: self.check("A", view)).pack()
+        Button(view, bg='#00ccff', activebackground='#ffff33', text=self.answers[1], command=lambda *args: self.check("B", view)).pack()
+        Button(view, bg='#00ccff', activebackground='#ffff33', text=self.answers[2], command=lambda *args: self.check("C", view)).pack()
+        Button(view, bg='#00ccff', activebackground='#ffff33', text=self.answers[3], command=lambda *args: self.check("D", view)).pack()
+        label = Label(view, text=self.question)
+        button_a = Button(view, bg='#00ccff', activebackground='#ffff33', text=self.answers[0], command=lambda *args: self.check("A", view))
+        button_b = Button(view, bg='#00ccff', activebackground='#ffff33', text=self.answers[1], command=lambda *args: self.check("B", view))
+        button_c = Button(view, bg='#00ccff', activebackground='#ffff33', text=self.answers[2], command=lambda *args: self.check("C", view))
+        button_d = Button(view, bg='#00ccff', activebackground='#ffff33', text=self.answers[3], command=lambda *args: self.check("D", view))
+
+        label.pack()
+        button_a.pack()
+        button_b.pack()
+        button_c.pack()
+        button_d.pack()
+
+        return view
+
+    def unpackView(self, view):
+@@ -52,12 +61,17 @@ def askQuestion():
+        return
+    button.pack_forget()
+    index += 1
+    questions[index].getView(root).pack()
+    questions[index].buttons(root).pack()
+
+#first page with introduction and start button
+
+Label(root, text="Welcome to the Simpsons Quiz Game!").pack()
+button = Button(root, text = 'Start Quiz', bg='#ffff33', activebackground='#adff2f',command= askQuestion)  
+button.pack()
+
+
+#This is for the questions file. It reads the other file that holds the questions and answers and appends them into the final correct list.
+
+questions = []
+file = open("new code questions.txt", "r")
+line = file.readline()
+while(line != ""):
+    questionString = line
+    answers = []
+    for i in range (4):
+        answers.append(file.readline())
+    correctLetter = file.readline()
+    correctLetter = correctLetter[:-1]
+    questions.append(Question(questionString, answers, correctLetter))
+    line = file.readline()
+file.close()
+index = -1
+right = 0
+number_of_questions = len(questions)
+root.mainloop()
